@@ -2,12 +2,14 @@ using UnityEngine;
 
 namespace Game.Gameplay.Field
 {
-    [CreateAssetMenu(fileName = "Setup", menuName = "Gameplay/Field/Setup")]
+    [CreateAssetMenu(fileName = "FieldSetup", menuName = "Gameplay/Field/Setup")]
     public class Setup : ScriptableObject
     {
+        public Vector2 Min => Vector2.zero - ((Vector2)Size) * 0.5f;
+        public Vector2 Max=> Vector2.zero + ((Vector2)Size) * 0.5f;
         public Vector2Int Size => new(_width, _height);
 
-        [SerializeField] private int _width;
-        [SerializeField] private int _height;
+        [SerializeField] [Min(1)] private int _width;
+        [SerializeField] [Min(1)] private int _height;
     }
 }

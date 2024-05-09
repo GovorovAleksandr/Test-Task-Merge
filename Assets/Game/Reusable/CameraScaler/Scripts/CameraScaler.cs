@@ -7,8 +7,6 @@ namespace Game.Reusable
     {
         [SerializeField] private int _referenceCameraSize = 5;
 
-        private Camera _camera;
-
         private float ReferenceRatio => (float)ReferenceWidth / (float)ReferenceHeight;
 
         private int ReferenceWidth => 1080;
@@ -16,29 +14,22 @@ namespace Game.Reusable
 
         private void Awake()
         {
-            FindCamera();
+            var camera = FindCamera();
 
             var currentRatio = (float)Screen.width / (float)Screen.height;
+            var cameraSize = (float)_referenceCameraSize / ReferenceRatio * currentRatio;
 
-            var newRatio = (float)_referenceCameraSize / ReferenceRatio * currentRatio;
+            if (cameraSize <= 0f) return;
 
-            if (newRatio <= 0f) return;
-
-            _camera.orthographicSize = newRatio;
-            ASKfjk();
-        }
-
-        private void ASKfjk()
-        {
-            Debug.Log("asd");
+            camera.orthographicSize = cameraSize;
         }
 
         private void OnValidate()
         {
-            FindCamera();
-            _camera.orthographicSize = _referenceCameraSize;
+            var camera = FindCamera();
+            camera.orthographicSize = _referenceCameraSize;
         }
 
-        private void FindCamera() => _camera = GetComponent<Camera>();
+        private Camera FindCamera() => GetComponent<Camera>();
     }
 }

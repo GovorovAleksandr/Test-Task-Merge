@@ -1,36 +1,48 @@
+using Game.Gameplay.Field.Items;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using Zenject;
 
-namespace Game.Gameplay.Field
+namespace Game.Gameplay.Field.Factory
 {
     public class ItemFactory : MonoBehaviour
     {
         [SerializeField] private Item _prefab;
-        [SerializeField] [Min(1f)] private float _waitDuration;
-        [SerializeField] [Min(1)] private int _maxItemsCount;
+        [SerializeField] private LevelSpriteList _levelList;
+        [SerializeField] private Setup _setup;
 
-        private Vector2 _minPos;
-        private Vector2 _maxPos;
+        [Inject] private readonly DiContainer _container;
 
-        public void Install(Vector3 borderSize)
+        private Vector3 _minPos;
+        private Vector3 _maxPos;
+
+        public void Initialize(Vector3 min, Vector3 max)
         {
-            _minPos = transform.position - borderSize / 2f + _prefab.transform.localScale / 2f;
-            _maxPos = transform.position + borderSize / 2f - _prefab.transform.localScale / 2f;
-
-            StartCoroutine(StartSpawnLoop());
+            _minPos = min + _prefab.transform.localScale * 0.5f;
+            _maxPos = max - _prefab.transform.localScale * 0.5f;
         }
-        
+
+        private void Awake() => StartCoroutine(StartSpawnLoop());
+
         private IEnumerator StartSpawnLoop()
         {
-            for(int i = 0; i <  _maxItemsCount; i++)
+            while (true)
             {
-                var x = Random.Range(_minPos.x, _maxPos.x);
-                var y = Random.Range(_minPos.y, _maxPos.y);
+                SpawnItem();
 
-                Vector2 position = new(x, y);
-                Instantiate(_prefab, position, Quaternion.identity, transform);
-                yield return new WaitForSecondsRealtime(_waitDuration);
+                yield return new WaitUntil(() => transform.childCount < _setup.MaxItemsCount);
+                yield return new WaitForSecondsRealtime(_setup.WaitDuration);
             }
+        }
+
+        public void SpawnItem()
+        {
+            var x = Random.Range(_minPos.x, _maxPos.x);
+            var y = Random.Range(_minPos.y, _maxPos.y);
+            Vector2 position = new(x, y);
+
+            _container.InstantiatePrefabForComponent<AbstractItem>(_prefab, position, Quaternion.identity, transform);
         }
     }
 }

@@ -3,17 +3,27 @@ using Zenject;
 
 namespace Game.Gameplay.Field
 {
-    public class Installer : MonoBehaviour
+    public class Installer : MonoInstaller
     {
         [SerializeField] private ViewInstaller _viewInstaller;
-        [SerializeField] private ItemFactory _itemFactory;
+        [SerializeField] private Factory.ItemFactory _itemFactory;
+        [SerializeField] private ItemFinder _itemFinder;
 
         [Inject]
         private void Install(Setup setup)
         {
-            _itemFactory.Install((Vector2)setup.Size);
+            Vector2 offset = transform.position;
+            _itemFactory.Initialize(setup.Min + offset, setup.Max + offset);
 
             _viewInstaller.Install(setup.Size);
+        }
+
+        public override void InstallBindings()
+        {
+            Container.Bind<ItemFinder>().
+                FromInstance(_itemFinder).
+                AsSingle().
+                NonLazy();
         }
     }
 }

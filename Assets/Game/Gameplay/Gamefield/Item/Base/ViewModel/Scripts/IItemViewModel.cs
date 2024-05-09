@@ -1,4 +1,4 @@
-﻿namespace Game.Gameplay.Gamefield
+﻿namespace Game.Gameplay.Field
 {
     public interface IItemViewModel
     {

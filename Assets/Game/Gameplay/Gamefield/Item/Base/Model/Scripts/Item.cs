@@ -1,15 +1,10 @@
 using UnityEngine;
 
-namespace Game.Gameplay.Field
+namespace Game.Gameplay.Field.Items
 {
     [RequireComponent(typeof(Collider2D))]
-    public class Item : MonoBehaviour, IItem
+    public class Item : AbstractItem
     {
-        private Collider2D _collider;
-
-        private void Awake()
-        {
-            _collider = GetComponent<Collider2D>();
-        }
+        
     }
 }

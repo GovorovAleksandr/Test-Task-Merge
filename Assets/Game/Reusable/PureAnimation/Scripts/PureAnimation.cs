@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Game.Reusable
 {
-    public class Timer : MonoBehaviour
+    public class PureAnimation
     {
         private readonly MonoBehaviour _context;
 
-        public Timer(MonoBehaviour context) => _context = context;
+        public PureAnimation(MonoBehaviour context) => _context = context;
 
         public void Play(float duration, Action onAnimationEnd) => Play(duration, _ => { }, onAnimationEnd);
         public void Play(float duration, Action<float> callback) => Play(duration, callback, () => { });
